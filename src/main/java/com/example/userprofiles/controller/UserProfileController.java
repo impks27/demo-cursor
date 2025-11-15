@@ -80,5 +80,14 @@ public class UserProfileController {
                     .body(Map.of("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<UserProfileResponseDTO>> searchProfiles(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String location) {
+        List<UserProfileResponseDTO> profiles = profileService.searchProfiles(name, email, location);
+        return ResponseEntity.ok(profiles);
+    }
 }
 

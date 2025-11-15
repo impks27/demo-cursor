@@ -86,6 +86,28 @@ public class UserProfileService {
         repository.deleteById(id);
     }
 
+    public List<UserProfileResponseDTO> searchProfiles(String name, String email, String location) {
+        List<UserProfile> profiles = repository.findAll();
+        
+        return profiles.stream()
+                .filter(profile -> {
+                    boolean matches = true;
+                    if (name != null && !name.isEmpty()) {
+                        matches = matches && profile.getName().toLowerCase().contains(name.toLowerCase());
+                    }
+                    if (email != null && !email.isEmpty()) {
+                        matches = matches && profile.getEmail().toLowerCase().contains(email.toLowerCase());
+                    }
+                    if (location != null && !location.isEmpty()) {
+                        matches = matches && profile.getLocation() != null && 
+                                  profile.getLocation().toLowerCase().contains(location.toLowerCase());
+                    }
+                    return matches;
+                })
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
     private void validatePhoneNumber(String phone) {
         if (phone != null && !phone.isEmpty()) {
             String digitsOnly = phone.replaceAll("\\D", "");
